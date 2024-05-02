@@ -1,0 +1,14 @@
+[server]
+port = 8200
+
+[log]
+level = "debug"
+path = ""
+
+[database]
+source = "mysql://root:root@127.0.0.1:3306/web3-sharp"
+max_open_conns = 50
+max_idle_conns = 50
+idle_timeout = 300
+max_lifetime = 600
+log_level = "info"

@@ -1,0 +1,9 @@
+version: '3'
+services:
+  web3-sharp:
+    image: liubiao/web3-sharp
+    container_name: web3-sharp
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./src/configs:/data/configs
