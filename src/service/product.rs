@@ -1,11 +1,10 @@
-use std::sync::Arc;
-use anyhow::Context;
-use sea_orm::{ColumnTrait, EntityTrait, LoaderTrait, PaginatorTrait, QueryFilter, QueryOrder};
 use crate::{conf, data};
+use sea_orm::{ColumnTrait, EntityTrait, LoaderTrait, PaginatorTrait, QueryFilter, QueryOrder};
+use std::sync::Arc;
 
 use crate::data::entity::{
-    user_product::{self, UserProductModel},
     prelude::*,
+    user_product::{self, UserProductModel},
 };
 use crate::error::Error;
 
@@ -20,7 +19,11 @@ impl ProductService {
         ProductService { conf, data }
     }
 
-    pub async fn get_user_product(&self, user_id: i64, user_product_id: i64) -> Result<UserProductModel, Error> {
+    pub async fn get_user_product(
+        &self,
+        user_id: i64,
+        user_product_id: i64,
+    ) -> Result<UserProductModel, Error> {
         let (mut user, product) = UserProduct::find()
             .find_also_related(Product)
             .filter(user_product::Column::UserId.eq(user_id))
@@ -32,7 +35,12 @@ impl ProductService {
         Ok(user)
     }
 
-    pub async fn get_user_products(&self, user_id: i64, page_num: u64, page_size: u64) -> Result<(Vec<UserProductModel>, u64), Error> {
+    pub async fn get_user_products(
+        &self,
+        user_id: i64,
+        page_num: u64,
+        page_size: u64,
+    ) -> Result<(Vec<UserProductModel>, u64), Error> {
         let mut res = Vec::new();
         let paginator = UserProduct::find()
             .filter(user_product::Column::UserId.eq(user_id))

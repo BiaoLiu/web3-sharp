@@ -1,16 +1,11 @@
 use axum::{Extension, Json};
-use axum_extra::extract::WithRejection;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
-use crate::data::entity::{
-    user_product::UserProductModel,
-    product::ProductModel,
-};
-use crate::error::Error;
 use crate::app::response::JsonResponse;
+use crate::data::entity::{product::ProductModel, user_product::UserProductModel};
+use crate::error::Error;
 use crate::service::Service;
-
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -63,10 +58,7 @@ pub struct UserProductResp {
 
 impl From<UserProductModel> for UserProductResp {
     fn from(value: UserProductModel) -> Self {
-        let product = match value.product {
-            Some(p) => Some(p.into()),
-            None => None,
-        };
+        let product = value.product.map(|p| p.into());
 
         Self {
             id: value.id,
@@ -91,7 +83,10 @@ pub async fn get_user_product(
     Extension(service): Extension<Service>,
     Json(req): Json<GetUserProductReq>,
 ) -> Result<JsonResponse<UserProductResp>, Error> {
-    let res = service.product_service.get_user_product(req.user_id, req.user_product_id).await?;
+    let res = service
+        .product_service
+        .get_user_product(req.user_id, req.user_product_id)
+        .await?;
     Ok(JsonResponse::success(res.into()))
 }
 
@@ -99,7 +94,10 @@ pub async fn get_user_products(
     Extension(service): Extension<Service>,
     Json(req): Json<GetUserProductsReq>,
 ) -> Result<JsonResponse<UserProductListResp>, Error> {
-    let user_products = service.product_service.get_user_products(req.user_id, req.page_num, req.page_size).await?;
+    let user_products = service
+        .product_service
+        .get_user_products(req.user_id, req.page_num, req.page_size)
+        .await?;
 
     let mut user_product_resps = Vec::new();
     for user_product in user_products.0 {

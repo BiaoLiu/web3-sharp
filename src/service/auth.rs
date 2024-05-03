@@ -7,8 +7,8 @@ use sea_orm::{ActiveModelTrait, ColumnTrait, EntityTrait, PaginatorTrait, QueryF
 
 use crate::conf;
 use crate::data::entity::{
+    prelude::*,
     user::{self, UserModel},
-    prelude::*
 };
 use crate::{data, error::Error};
 
@@ -39,13 +39,12 @@ impl AuthService {
         AuthService { conf, data }
     }
     pub async fn login(&self, req: &LoginReq) -> Result<UserModel, Error> {
-        let res = User::find()
+        User::find()
             .filter(user::Column::Username.eq(&req.username))
             .one(&self.data.db)
             .await
             .context("login error")?
-            .ok_or_else(|| Error::NotFound("user not found".to_string()));
-        res
+            .ok_or_else(|| Error::NotFound("user not found".to_string()))
     }
 
     pub async fn register(&self, req: &UserReq) -> Result<UserModel, Error> {
@@ -54,7 +53,9 @@ impl AuthService {
             .count(&self.data.db)
             .await?;
         if count > 0 {
-            return Err(Error::InternalServerError("user already exists".to_string()));
+            return Err(Error::InternalServerError(
+                "user already exists".to_string(),
+            ));
         }
 
         let a = user::ActiveModel {
@@ -79,11 +80,8 @@ impl AuthService {
         Ok(())
     }
 
-    pub async fn get_user_list(
-        &self,
-        req: &GetUserListReq,
-    ) -> Result<Vec<UserModel>, Error> {
-        let mut s = User::find().filter(user::Column::Username.like(&req.username));
+    pub async fn get_user_list(&self, req: &GetUserListReq) -> Result<Vec<UserModel>, Error> {
+        let s = User::find().filter(user::Column::Username.like(&req.username));
 
         // if let Some(role) = &req.role {
         //     s = s.filter(user::Column::Role.eq(role));

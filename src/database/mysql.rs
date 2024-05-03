@@ -23,8 +23,7 @@ pub async fn new_connection(conf: Config) -> DbConn {
         .sqlx_logging(false)
         .sqlx_logging_level(log::LevelFilter::from_str(&conf.log_level).unwrap());
 
-    let conn = Database::connect(opt)
+    Database::connect(opt)
         .await
-        .expect("database connection error");
-    conn
+        .expect("database connection error")
 }

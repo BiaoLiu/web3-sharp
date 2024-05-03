@@ -1,5 +1,3 @@
-use std::time::SystemTime;
-
 use axum::{Extension, Json};
 use serde::{Deserialize, Serialize};
 
@@ -39,7 +37,7 @@ pub async fn login(
     println!("req:{:?}", req);
 
     // now time
-    let now = SystemTime::now();
+    // let now = SystemTime::now();
 
     let login_req = auth::LoginReq {
         username: req.username,
@@ -83,7 +81,10 @@ pub async fn update_user(
         username: req.username,
         password: req.password,
     };
-    service.auth_service.update_user(req.id, &account_req).await?;
+    service
+        .auth_service
+        .update_user(req.id, &account_req)
+        .await?;
     Ok(JsonResponse::success(()))
 }
 

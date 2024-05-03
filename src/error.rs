@@ -1,9 +1,8 @@
 use anyhow::anyhow;
-use axum::extract::rejection::{JsonRejection, JsonDataError};
+use axum::extract::rejection::JsonRejection;
 use axum::http::StatusCode;
 use axum::Json;
 use serde_json::json;
-use thiserror;
 
 #[derive(Debug)]
 pub struct Status {
@@ -39,14 +38,32 @@ pub enum Error {
 
 impl Error {
     pub fn get_status(self) -> Status {
-        return match self {
-            Error::JsonRejection(err) => Status { code: 400u16, message: err.to_string() },
+        match self {
+            Error::JsonRejection(err) => Status {
+                code: 400u16,
+                message: err.to_string(),
+            },
             Error::Custom(status) => status,
-            Error::BadRequest(err) => Status { code: 400u16, message: err },
-            Error::Unauthorized(err) => Status { code: 401u16, message: err },
-            Error::Forbidden(err) => Status { code: 403u16, message: err },
-            Error::NotFound(err) => Status { code: 404u16, message: err },
-            Error::InternalServerError(err) => Status { code: 500u16, message: err },
+            Error::BadRequest(err) => Status {
+                code: 400u16,
+                message: err,
+            },
+            Error::Unauthorized(err) => Status {
+                code: 401u16,
+                message: err,
+            },
+            Error::Forbidden(err) => Status {
+                code: 403u16,
+                message: err,
+            },
+            Error::NotFound(err) => Status {
+                code: 404u16,
+                message: err,
+            },
+            Error::InternalServerError(err) => Status {
+                code: 500u16,
+                message: err,
+            },
             Error::Unknown(err) => {
                 eprintln!("Error: {:?}", err);
                 Status {
@@ -54,7 +71,7 @@ impl Error {
                     message: err.to_string(),
                 }
             }
-        };
+        }
     }
 }
 

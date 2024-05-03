@@ -1,9 +1,6 @@
-use std::sync::Arc;
-use crate::{conf, error::Error};
 use crate::data;
-
-use crate::data::entity::
-{prelude::*};
+use crate::{conf, error::Error};
+use std::sync::Arc;
 
 pub struct CreateTransactionOrderReq {
     user_id: i64,
@@ -29,7 +26,7 @@ impl EthereumService {
 
 impl EthereumService {
     pub fn create_transaction_order(req: &CreateTransactionOrderReq) -> Result<(), Error> {
-        if req.txn_type == "mint".to_string() {
+        if req.txn_type == *"mint".to_string() {
             Self::create_mint_tx_order(req)
         } else {
             Err(Error::BadRequest("".to_string()))

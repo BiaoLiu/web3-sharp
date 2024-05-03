@@ -1,12 +1,9 @@
-use axum::{
-    http::{Request},
-    Extension,
-};
-use axum::body::Body;
 use crate::service::ethereum::EthereumService;
+use axum::body::Body;
+use axum::{http::Request, Extension};
 
 pub async fn notify(Extension(ethereum_service): Extension<EthereumService>, req: Request<Body>) {
-    let (parts, body) = req.into_parts();
+    // let (parts, body) = req.into_parts();
 
     // let bytes = match hyper::body::to_bytes(body).await {
     //     Ok(bytes) => bytes,

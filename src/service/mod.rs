@@ -9,8 +9,8 @@ use crate::service::user::UserService;
 pub mod auth;
 pub mod ethereum;
 
-pub mod user;
 pub mod product;
+pub mod user;
 
 #[derive(Clone)]
 pub struct Service {
@@ -24,6 +24,10 @@ impl Service {
         let auth_service = AuthService::new(conf.clone(), data.clone());
         let product_service = ProductService::new(conf.clone(), data.clone());
         let user_service = UserService::new(conf, data);
-        Service { auth_service, product_service, user_service }
+        Service {
+            auth_service,
+            product_service,
+            user_service,
+        }
     }
 }

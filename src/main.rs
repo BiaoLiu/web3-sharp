@@ -1,17 +1,16 @@
+use axum::Router;
 use clap::Parser;
 use std::net::SocketAddr;
 use std::str::FromStr;
 use std::sync::Arc;
-use axum::Router;
-use axum::routing::get;
 use tokio::signal;
 use tower_http::trace;
 use tower_http::trace::TraceLayer;
 use tracing::Level;
 
-use tracing_subscriber::{Layer, layer::Filter, layer::SubscriberExt, util::SubscriberInitExt};
-use tracing_subscriber::filter::LevelFilter;
 use crate::conf::Log;
+use tracing_subscriber::filter::LevelFilter;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, Layer};
 
 mod app;
 mod conf;
@@ -26,7 +25,12 @@ mod utils;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
-    #[arg(short, long, value_name = "FILE", default_value = "src/configs/config.toml")]
+    #[arg(
+        short,
+        long,
+        value_name = "FILE",
+        default_value = "src/configs/config.toml"
+    )]
     conf: String,
 }
 
@@ -63,9 +67,7 @@ fn init_tracing(log_conf: &Log) -> tracing_appender::non_blocking::WorkerGuard {
             .with_ansi(false)
             .with_filter(LevelFilter::from_str(&log_conf.level).unwrap());
 
-        tracing_subscriber::registry()
-            .with(file_layer)
-            .init();
+        tracing_subscriber::registry().with(file_layer).init();
         _guard
     } else {
         let (non_blocking, _guard) = tracing_appender::non_blocking(std::io::stdout());
@@ -77,9 +79,7 @@ fn init_tracing(log_conf: &Log) -> tracing_appender::non_blocking::WorkerGuard {
             .with_ansi(false)
             .with_filter(LevelFilter::from_str(&log_conf.level).unwrap());
 
-        tracing_subscriber::registry()
-            .with(std_layer)
-            .init();
+        tracing_subscriber::registry().with(std_layer).init();
         _guard
     }
 }
@@ -92,7 +92,7 @@ async fn shutdown_signal() {
     };
 
     #[cfg(unix)]
-        let terminate = async {
+    let terminate = async {
         signal::unix::signal(signal::unix::SignalKind::terminate())
             .expect("failed to install signal handler")
             .recv()
@@ -100,7 +100,7 @@ async fn shutdown_signal() {
     };
 
     #[cfg(not(unix))]
-        let terminate = std::future::pending::<()>();
+    let terminate = std::future::pending::<()>();
 
     tokio::select! {
         _ = ctrl_c => {
@@ -111,5 +111,3 @@ async fn shutdown_signal() {
         },
     }
 }
-
-

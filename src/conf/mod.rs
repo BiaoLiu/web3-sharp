@@ -42,7 +42,6 @@ impl Config {
             .build()
             .unwrap();
 
-        let config = settings.try_deserialize::<Self>().unwrap();
-        config
+        settings.try_deserialize::<Self>().unwrap()
     }
 }

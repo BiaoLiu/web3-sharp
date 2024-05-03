@@ -1,8 +1,8 @@
 pub mod entity;
 
-use sea_orm::{DbConn};
-use std::sync::Arc;
 use crate::{conf, database};
+use sea_orm::DbConn;
+use std::sync::Arc;
 
 pub struct Data {
     pub db: DbConn,
